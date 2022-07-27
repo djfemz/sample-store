@@ -2,21 +2,25 @@ package main
 
 import (
 	"testing"
+
+	"github.com/djfemz/go-web-intro-2/data/models"
+	"github.com/djfemz/go-web-intro-2/data/repositories"
+	"github.com/djfemz/go-web-intro-2/services"
 	"github.com/stretchr/testify/assert"
 )
 
-var testProduct *Product
-var testProduct1 *Product
+var testProduct *models.Product
+var testProduct1 *models.Product
 
 func setUp() {
-	testProduct = &Product{
+	testProduct = &models.Product{
 		Name: "test product",
 		Description: "a test product",
 		Price: 20.00,
 		Quantity: 2,
 	}
 
-	testProduct1= &Product{
+	testProduct1= &models.Product{
 		Name: "test product",
 		Description: "a test product",
 		Price: 20.00,
@@ -26,7 +30,7 @@ func setUp() {
 
 func TestThatProductCanBeCreated(t *testing.T) {
 	setUp()
-	id, err:=AddProduct(testProduct)
+	id, err:=services.AddProduct(testProduct)
 	if err!=nil{
 		assert.Fail(t, "error adding product")
 	}
@@ -36,11 +40,11 @@ func TestThatProductCanBeCreated(t *testing.T) {
 
 func TestThatTwoProductsCanBeCreated(t *testing.T) {
 	setUp()
-	id, err:=AddProduct(testProduct)
+	id, err:=services.AddProduct(testProduct)
 	if err!=nil{
 		assert.Fail(t, "error adding product")
 	}
-	id1, err:=AddProduct(testProduct1)
+	id1, err:=services.AddProduct(testProduct1)
 
 	if err!=nil{
 		assert.Fail(t, "error adding product")
@@ -52,22 +56,24 @@ func TestThatTwoProductsCanBeCreated(t *testing.T) {
 func TestThatItemCanBeDeleted(t *testing.T) {
 	setUp()
 	//given that we have two items
-	_, err:=AddProduct(testProduct)
+	_, err:=services.AddProduct(testProduct)
 	if err!=nil{
 		assert.Fail(t, "add failed")
 	}
-	id2, err:=AddProduct(testProduct1)
+	id2, err:=services.AddProduct(testProduct1)
 	if err!=nil{
 		assert.Fail(t, "add failed")
 	}
 	//when we remove one product
-	errr:=DeleteById(id2)
+	errr:=services.DeleteById(id2)
 	if errr!=nil{
 		assert.Fail(t, "add failed")
 	}
 	//assert that product was removed
-	assert.Equal(t, 1, len(ProductList))
-	indexOfLastProduct:=len(ProductList)-1
-	lastProduct:=ProductList[indexOfLastProduct]
+	assert.Equal(t, 1, len(repositories.ProductList))
+	indexOfLastProduct:=len(repositories.ProductList)-1
+	lastProduct:=repositories.ProductList[indexOfLastProduct]
 	assert.Equal(t, 1, lastProduct.Id)
 }
+
+
